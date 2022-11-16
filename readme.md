@@ -7,8 +7,6 @@
  <p>Projeto feito utilizando Node.js, o banco de dados embutido SQLITE3 e a framework Express.js</p>
 <p>Conheça a comunidade da Orange Juice e a plataforma de estudos que nos baseamos: <a href="https://digital.fcamara.com.br/orangejuice">Orange Juice</a></p>
 
-> :construction: Projeto em construção :construction:
-
 ![Logo da Orange Evolution](https://d335luupugsy2.cloudfront.net/cms/files/107693/1663161547/$2c3a91bepr3)
 
 ---
@@ -19,6 +17,9 @@
 - <a href="https://www.npmjs.com/">NPM</a>
 - <a href="https://expressjs.com/pt-br/">Express</a>
 - <a href="https://www.npmjs.com/package/sqlite3">SQLite</a>
+- <a href="https://jwt.io">JSON Web Tokens</a>
+- <a href="https://www.npmjs.com/package/dotenv">Dotenv</a>
+- <a href="https://www.npmjs.com/package/bcrypt">Bcrypt</a>
 
 ---
 
@@ -60,12 +61,22 @@ npm start
 
 ---
 
+## ❗Atenção❗
+
+<h4>Na aplicação, há validações de tokens que são gerados quando o usuário é logado, cadastre um usuário antes de fazer qualquer requisição para gerar um token.</h4>
+<p>O token gerado só pode requisitar informações, na tabela usuário, do mesmo id.</p>
+<p>Caso queira fazer requisições dos usuários já existentes, utilize o login dos listados abaixo na rota GET.</p>
+
+<p>Duração do token: 30 minutos.</p>
+
+---
+
 ## 🛣️ Rotas HTTP
 
-- [GET](#b-rota-get-b)
-- [POST](#b-rota-post-b)
-- [PUT](#b-rota-put-b)
-- [DELETE](#b-rota-delete-b)
+- [GET](#-rota-get-)
+- [POST](#-rota-post-)
+- [PUT](#-rota-put-)
+- [DELETE](#-rota-delete-)
 
 ### <b> Rota GET </b>
 
@@ -513,6 +524,7 @@ Exemplo da resposta esperada:
 ##### <b>/usuarios</b>
 
 Cria um usuário e insere no banco de dados.
+A senha é mandada criptografada para o banco de dados, para evitar vazamentos.
 Exemplo de corpo a ser enviado como requisição:
 
 ```json
@@ -532,10 +544,38 @@ Exemplo da resposta esperada:
   "usuario": {
     "nome_completo": "Bruno Souza",
     "email": "bruno.souza23@gmail.com",
-    "senha": "1asda269",
+    "senha": "$2b$08$wzUR0vyPgz0mGClcjbXbuetJvosngCn795KHx8AWl3OhrdvElkLoC",
     "admin": false
   },
   "error": false
+}
+```
+
+##### <b>/usuarios/login</b>
+
+Recebe a informação de um possível usuário existente no banco de dados, valida essa informação e retorna uma resposta.
+Exemplo de corpo a ser enviado como requisição:
+
+```json
+{
+  "email": "carlos.alb12@gmail.com",
+  "senha": "@12345679"
+}
+```
+
+Exemplo da resposta esperada:
+
+```json
+{
+  "auth": true,
+  "token": "{token gerado}",
+  "msg": "Usuario Carlos Alberto Albuquerque logado!",
+  "usuario": {
+    "ID": 1,
+    "NOME_COMPLETO": "Carlos Alberto Albuquerque",
+    "EMAIL": "carlos.alb12@gmail.com",
+    "ADMIN": 0
+  }
 }
 ```
 
